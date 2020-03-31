@@ -5,4 +5,45 @@ date: "March 30th"
 output: html_notebook
 ---
 
+```{r include=FALSE}
+library(here)
+```
+
+
+### Function creaton
+```{r}
+my_function <- function(x, y, p) {
+  result_reg <- lm(y ~ x)
+  result_res <- resid(result_reg)
+  result_res2 <- sort(abs(result_res), decreasing = TRUE)
+  for (i in 1: length(result_res)) {
+      if (abs(result_res[i]) >= result_res2[p]) {
+    outcome[i] <- "TRUE"
+    } else {
+      outcome[i] <- "FALSE"
+    }
+    print(outcome[i])
+  }
+}
+
+```
+
+
+***
+
+### Scatterplot
+```{r}
+my_data <- read.csv(here("Data", "Data for HW7.csv"))
+p <- nrow(my_data)*0.1
+residuals <- my_function(my_data$X, my_data$Y, p)
+
+scatter_plot <- with(my_data, plot(Y, X),
+                   main = "Regression for Assignment#7", 
+                   xlab = "Explanatory variable", ylab="Response variable",
+                   col = ifelse(residuals == "TRUE","red","black"))
+
+abline(lm(my_data$Y ~ my_data$X, data = my_data), col = "red")
+```
+
+
 
